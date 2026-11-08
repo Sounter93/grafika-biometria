@@ -276,7 +276,7 @@ svg {
 /* ---------- prawy panel ---------- */
 
 .dock {
-  width: 320px;
+  width: 350px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -306,13 +306,14 @@ svg {
 }
 
 .dock-tabs button {
-  flex: 1;
-  padding: 10px 0;
+  flex: 1 1 auto;
+  padding: 10px 4px;
   border: none;
   border-bottom: 2px solid transparent;
   background: none;
   color: var(--text-dim);
   font: inherit;
+  font-size: 12.5px;
   cursor: pointer;
 }
 
@@ -851,4 +852,138 @@ input[type='range'] {
 .dialog h3 {
   margin: 0 0 8px;
   font-size: 15px;
+}
+
+/* ---------- binaryzacja i filtry ---------- */
+
+.op-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.op-body .formula {
+  margin-top: 0;
+}
+
+.warn {
+  color: #fbbf24;
+  font-size: 12px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.check input {
+  accent-color: var(--accent);
+}
+
+/* progi trzech metod obok siebie */
+.thresholds {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.thresholds div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.thresholds div.on {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: #fff;
+}
+
+.thresholds b {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: #fff;
+}
+
+/* siatka z wagami maski splotu */
+.kernel-grid {
+  display: grid;
+  gap: 3px;
+}
+
+.kernel-grid input {
+  padding: 4px 2px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  min-width: 0;
+  -moz-appearance: textfield;
+}
+
+.kernel-grid input::-webkit-inner-spin-button,
+.kernel-grid input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.op-body .fields {
+  margin: 0;
+}
+
+/* element strukturyzujący */
+.se-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.se-presets .btn {
+  flex: 1;
+  padding: 4px 6px;
+}
+
+.se-grid {
+  display: grid;
+  gap: 2px;
+  max-width: 300px;
+  user-select: none;
+  touch-action: none;
+}
+
+.se-cell {
+  aspect-ratio: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.se-cell:hover {
+  border-color: #4a5160;
+}
+
+.se-cell.on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.se-cell.center::after {
+  content: '';
+  position: absolute;
+  inset: 35%;
+  border-radius: 50%;
+  background: #fff;
+  mix-blend-mode: difference;
 }

@@ -3,8 +3,11 @@ import { HistogramView } from './core/histogramView.ts'
 import { loadImageFile, saveImage } from './core/io.ts'
 import { CanvasView, TOOLS } from './editor/canvasView.ts'
 import { Editor } from './editor/editor.ts'
-import { mountOperationsPanel } from './biometrics/operationsPanel.ts'
+import { Preview } from './editor/preview.ts'
+import { mountBinarizationPanel } from './biometrics/binarizationPanel.ts'
+import { mountCorrectionPanel } from './biometrics/correctionPanel.ts'
 import { mountColorPanel } from './graphics/color/colorPanel.ts'
+import { mountFiltersPanel } from './graphics/filters/filtersPanel.ts'
 import { mountObjectsPanel } from './graphics/primitives/objectsPanel.ts'
 
 const icon = (path: string) => `<svg viewBox="0 0 24 24">${path}</svg>`
@@ -79,12 +82,16 @@ app.innerHTML = `
         <div class="js-histogram"></div>
       </section>
       <nav class="dock-tabs">
-        <button data-tab="ops" class="active">Obraz</button>
+        <button data-tab="correction" class="active">Korekcja</button>
+        <button data-tab="binarization">Binaryzacja</button>
+        <button data-tab="filters">Filtry</button>
         <button data-tab="color">Kolor</button>
         <button data-tab="objects">Obiekty</button>
       </nav>
       <div class="dock-body">
-        <div class="dock-page js-page-ops" data-page="ops"></div>
+        <div class="dock-page js-page-correction" data-page="correction"></div>
+        <div class="dock-page js-page-binarization hidden" data-page="binarization"></div>
+        <div class="dock-page js-page-filters hidden" data-page="filters"></div>
         <div class="dock-page js-page-color hidden" data-page="color"></div>
         <div class="dock-page js-page-objects hidden" data-page="objects"></div>
       </div>
@@ -129,7 +136,10 @@ const view = new CanvasView(editor, {
 })
 
 const histogram = new HistogramView($('.js-histogram'))
-const ops = mountOperationsPanel($('.js-page-ops'), editor)
+const preview = new Preview(editor)
+mountCorrectionPanel($('.js-page-correction'), editor, preview)
+mountBinarizationPanel($('.js-page-binarization'), editor, preview)
+mountFiltersPanel($('.js-page-filters'), editor, preview)
 mountColorPanel($('.js-page-color'), editor)
 mountObjectsPanel($('.js-page-objects'), editor, view)
 
@@ -161,8 +171,8 @@ editor.on('color', updateSwatch)
 function openTab(name: string) {
   app.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => b.classList.toggle('active', b.dataset.tab === name))
   app.querySelectorAll<HTMLElement>('[data-page]').forEach((p) => p.classList.toggle('hidden', p.dataset.page !== name))
-  // wyjście z panelu "Obraz" kasuje niezatwierdzony podgląd
-  if (name !== 'ops') ops.cancelPreview()
+  // zmiana zakładki kasuje niezatwierdzony podgląd
+  preview.cancel()
 }
 app.querySelectorAll<HTMLButtonElement>('[data-tab]').forEach((b) => {
   b.addEventListener('click', () => openTab(b.dataset.tab!))
@@ -265,7 +275,7 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Delete' || e.key === 'Backspace') editor.deleteSelected()
   else if (e.key === 'Escape') {
     view.cancel()
-    ops.cancelPreview()
+    preview.cancel()
   } else if (e.key === '+' || e.key === '=') view.zoomIn()
   else if (e.key === '-') view.zoomOut()
   else if (e.key === '0') view.fit(true)

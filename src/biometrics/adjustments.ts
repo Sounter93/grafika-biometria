@@ -14,6 +14,21 @@ export function negative(src: ImageBuffer) {
   return applyLutAll(src, makeLut((v) => 255 - v))
 }
 
+// szum "sól i pieprz": losowe piksele stają się białe albo czarne (amount = jaka część pikseli)
+// przydaje się do pokazania, jak działa filtr medianowy
+export function saltPepper(src: ImageBuffer, amount: number) {
+  const out = src.clone()
+  const d = out.data
+  for (let i = 0; i < d.length; i += 4) {
+    if (Math.random() >= amount) continue
+    const v = Math.random() < 0.5 ? 0 : 255
+    d[i] = v
+    d[i + 1] = v
+    d[i + 2] = v
+  }
+  return out
+}
+
 // skala szarości jako średnia z R, G, B
 export function grayscale(src: ImageBuffer) {
   const out = new ImageBuffer(src.width, src.height)
